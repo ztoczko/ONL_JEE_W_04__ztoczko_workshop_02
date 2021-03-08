@@ -11,22 +11,41 @@ public class User {
     private static UserDAO userDAO = new UserDAO();
 
     public User(String email, String username, String password) {
-        if (!UserDAO.isEmailUnique(email)) {
-            System.out.println("User with e-mail " + email + " already exists");
-            id = -1;
-        } else {
-            this.email = email; //weryfikacja emaila
-            this.username = username;
-            this.password = BCrypt.hashpw(password, BCrypt.gensalt());
-            UserDAO.create(this);   //ustawić id -1 dla błędu SQL //czy konstruktor może zwrócić nulla??
-        }
+
+        this.email = email; //weryfikacja emaila
+        this.username = username;
+        this.password = BCrypt.hashpw(password, BCrypt.gensalt());
+        UserDAO.create(this);
+    }
+
+    User(int id, String email, String username, String password) {
+        this.id = id;
+        this.email = email; //weryfikacja emaila
+        this.username = username;
+        this.password = password;
+    }
+
+    public static User getUserById(int id) {
+        return userDAO.read(id);
+    }
+
+    public static User getUserByEmail(String email) {
+        return userDAO.read(email);
+    }
+
+    public boolean deleteUser() {
+        return userDAO.delete(id);
+    }
+
+    public static User[] getAllUsers() {
+        return userDAO.findAll();
     }
 
     public int getId() {
         return id;
     }
 
-    public void setId(int id) {
+    void setId(int id) {
         this.id = id;
     }
 
@@ -35,14 +54,10 @@ public class User {
     }
 
     public boolean setEmail(String email) {  //weryfikacja emaila
-        if (!userDAO.isEmailUnique(email)) {
-            System.out.println("User with e-mail " + email + " already exists");
-            return false;
-        }
+
         String backup = this.email;
         this.email = email;
         if (!userDAO.update(this)) {
-            System.out.println("Error while updating user's e-mail in database, last change has been reverted");
             this.email = backup;
             return false;
         }
@@ -58,7 +73,6 @@ public class User {
         String backup = this.username;
         this.username = username;
         if (!userDAO.update(this)) {
-            System.out.println("Error while updating user's username in database, last change has been reverted");
             this.username = backup;
             return false;
         }
@@ -73,7 +87,7 @@ public class User {
         String backup = this.password;
         this.password = BCrypt.hashpw(password, BCrypt.gensalt());
         if (!userDAO.update(this)) {
-            System.out.println("Error while updating user's password in database, last change has been reverted");
+//            System.out.println("Error while updating user's password in database, last change has been reverted");
             this.password = backup;
             return false;
         }
@@ -84,6 +98,10 @@ public class User {
         return BCrypt.checkpw(password, this.password);
     }
 
+    public static boolean isEmailUnique(String email) {
+        return userDAO.read(email) == null ? true : false;
+    }
+
     public boolean equals(User user) {
         return user.id == this.id ? true : false;
     }
@@ -91,4 +109,6 @@ public class User {
     public String toString() {
         return "id: " + id + ", username: " + username + ", e-mail: " + email;
     }
+
+
 }

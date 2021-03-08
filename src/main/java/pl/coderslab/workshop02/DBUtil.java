@@ -10,6 +10,8 @@ public class DBUtil {
     private static final String DB_URL = "jdbc:mysql://localhost:3306/" + DB_NAME + "?useSSH=false&characterSet=utf8";
     private static final String DB_USER = "root";
     private static String DBPassword = new String();
+//    private static final String DB_PASSWORD = System.getenv("mysqlpassword");
+//    private static final String DB_PASSWORD = "plain_text_password";
 
 
     public /*static*/ Connection connect() {
@@ -34,6 +36,10 @@ public class DBUtil {
         }
 
     }
+
+//    public /*static*/ Connection connect() {
+//        return DriverManager.getConnection(DB_URL, DB_USER, DBPassword);
+//    }
 
 
 }
