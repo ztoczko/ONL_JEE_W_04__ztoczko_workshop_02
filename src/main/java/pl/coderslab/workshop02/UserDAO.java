@@ -1,7 +1,5 @@
 package pl.coderslab.workshop02;
 
-import com.mysql.cj.x.protobuf.MysqlxPrepare;
-
 import java.sql.*;
 import java.util.Arrays;
 
@@ -12,7 +10,7 @@ public class UserDAO {
     private static final String UPDATE = "UPDATE users SET email = ?, username = ?, password = ? WHERE id = ?";
     private static final String DELETE = "DELETE FROM users WHERE id = ?";
     private static final String FIND_ALL = "SELECT * FROM users";
-    private static DBUtil dBUtil = new DBUtil();
+    private static DBUtil dBUtil = new DBUtil("mysql://localhost:3306", "root", "ENTER YOUR PASSWORD HERE", "workshop2");
 
 
     public static void create(User user) {
